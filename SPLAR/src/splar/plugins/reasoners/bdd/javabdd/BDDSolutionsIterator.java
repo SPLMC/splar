@@ -20,7 +20,8 @@ public class BDDSolutionsIterator<T> implements Iterator<T> {
 	int j = 0;
 	
 	public BDDSolutionsIterator(BDD bdd, String[] index2varMap) {
-		this.bit = bdd.allsat();
+//		this.bit = bdd.allsat();
+		this.bit = bdd.allsat().iterator();
 //		this.bit = new BDD.BDDIterator(bdd,bdd.support());
 		this.index2varMap = index2varMap;
 		this.assignments = new ArrayList<Assignment>();
