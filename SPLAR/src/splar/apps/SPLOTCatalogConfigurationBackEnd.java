@@ -1,11 +1,12 @@
 package splar.apps;
 
-import java.io.FileReader;
+import java.io.FileReader; 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,10 +14,13 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDD.BDDIterator;
 import net.sf.javabdd.BDDFactory;
 import net.sf.javabdd.JFactory;
 import splar.plugins.configuration.bdd.javabdd.BDDConfigurationEngine;
-import au.com.bytecode.opencsv.CSVReader;
+
+import com.opencsv.*;
+//import au.com.bytecode.opencsv.CSVReader;
 
 public class SPLOTCatalogConfigurationBackEnd {
 
@@ -243,9 +247,10 @@ public class SPLOTCatalogConfigurationBackEnd {
 			System.out.println("Path count: " + fbdd.not().pathCount());
 			List<String> product = new LinkedList<String>();
 			int countProducts = 0;
-			for( BDD.AllSatIterator it = new BDD.AllSatIterator(fbdd) ; it.hasNext() ; ) {
+//			for( BDD.AllSatIterator it = new BDD.AllSatIterator(fbdd) ; it.hasNext() ; ) {
+			for( Iterator it = fbdd.allsat().iterator() ; it.hasNext() ; ) {
 				product.clear();
-				byte[] path = it.nextSat();
+				byte[] path = (byte[]) it.next();
 				int index = 0;
 				for( byte value : path ) {
 					String var = varIndex2NameMap.get(index);

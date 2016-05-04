@@ -7,6 +7,7 @@ import org.sat4j.core.LiteralsUtils;
 import org.sat4j.minisat.core.ILits2;
 import org.sat4j.minisat.orders.VarOrder;
 
+
 public class StaticVariableOrderSAT extends VarOrder<ILits2> {
 
     private static final long serialVersionUID = 1L;
@@ -41,7 +42,7 @@ public class StaticVariableOrderSAT extends VarOrder<ILits2> {
      * 
      * @see org.sat4j.minisat.IHeuristics#init()
      */
-    @Override
+    
     public void init() {
         super.init();
         
@@ -75,7 +76,7 @@ public class StaticVariableOrderSAT extends VarOrder<ILits2> {
         lastVar = 1;
     }
 
-    @Override
+    
     public String toString() {
         return "Init VSIDS order with binary clause occurrences."; //$NON-NLS-1$
     }

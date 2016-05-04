@@ -20,7 +20,8 @@ import splar.plugins.configuration.bdd.javabdd.catalog.Product;
 import splar.plugins.configuration.bdd.javabdd.catalog.ProductCatalog;
 import splar.plugins.configuration.bdd.javabdd.catalog.ProductComponent;
 import splar.plugins.reasoners.bdd.javabdd.FMReasoningWithBDD;
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
+//import au.com.bytecode.opencsv.CSVReader;
 
 public class BDDConfigurationEngine extends ConfigurationEngine {
 
