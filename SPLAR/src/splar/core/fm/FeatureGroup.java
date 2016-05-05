@@ -1,5 +1,8 @@
 package splar.core.fm;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 
 public class FeatureGroup extends FeatureTreeNode {
 
@@ -30,5 +33,39 @@ public class FeatureGroup extends FeatureTreeNode {
 
 	public String toString() {
 		return ":g "+ super.toString() + " [" + getMin() + "," + (getMax()==-1?"*":getMax()) + "] ";
+	}
+	
+	
+	/**
+	 * This method creates the DOM element a grouping feature and its children features
+	 * @param doc - The DOM document where the element will be created
+	 * @return e - The DOM element containing all the information of the feature and 
+	 * its children
+	 * 
+	 *  @author Andre Luiz Peron Martins Lanna
+	 */
+	public Element createFeatureIdeElement(Document doc) {
+		//Choosing each type of DOM element for representing the feature
+		String groupType = (getMin()==1 && getMax()==1 ? "alt" : "or");
+		String isAbstract = (String) getProperty("abstract");
+
+		//
+		String name = getName().replaceFirst("_", "");
+		//setting the element's attributes
+		Element e = doc.createElement(groupType);
+		e.setAttribute("mandatory", "true");
+//		e.setAttribute("name", getName());
+		e.setAttribute("name", name);
+		if (isAbstract != null && isAbstract.equals("true"))
+			e.setAttribute("abstract", "true");
+		
+		int numChildren = this.getChildCount(); 
+		for (int i=0; i<numChildren; i++) {
+			FeatureTreeNode tn = (FeatureTreeNode) getChildAt(i);
+			Element c = tn.createFeatureIdeElement(doc); 
+			e.appendChild(c);
+		}
+		
+		return e;
 	}
 }

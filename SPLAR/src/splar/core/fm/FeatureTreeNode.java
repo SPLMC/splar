@@ -8,6 +8,9 @@ import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import splar.core.constraints.BooleanVariableInterface;
 
 public class FeatureTreeNode extends DefaultMutableTreeNode implements BooleanVariableInterface, Cloneable {
@@ -208,5 +211,9 @@ public class FeatureTreeNode extends DefaultMutableTreeNode implements BooleanVa
 	
 	public Object getAttachedData() {
 		return attachedData;
+	}
+
+	public Element createFeatureIdeElement(Document doc) { 
+		return null;
 	}
 }

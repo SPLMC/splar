@@ -1,6 +1,6 @@
 package splar.apps.generator;
 
-import java.io.File;
+import java.io.File; 
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -256,6 +256,94 @@ public class FMGeneratorEngine{
 		}
 		
 	}
+	
+	public List<FeatureModel> run2() {
+		
+		fireEvent("modelGenerationStarted", "", "");
+
+		prepare();
+		
+		List<FeatureModel> answer = new LinkedList<FeatureModel>(); 
+		FeatureModel fm = null;
+		FeatureModelStatistics stats = null;
+		for( int index = startIndex ; index <= endIndex && !canceled; ) {
+
+//			System.out.println("------------------------------------------------");
+//			System.out.println("Generating model: " + modelName + "-" + index + " ...");
+			
+			String modelIndex = "#"+index;
+			
+			try {
+				fireEvent("generatingModel", modelIndex, "");
+				fm = generateFeatureModel(index, modelSize, ECR/100.0, clauseDensity);				
+				fireEvent("doneGeneratingModel", modelIndex, "");
+			}
+			catch( Exception e ) {
+//				System.out.println("Oops, exception, trying again :-)");
+//				e.printStackTrace();
+				fireEvent("errorDuringGeneration", modelIndex, e.getMessage());
+				continue;   
+			}
+			
+			stats = new FeatureModelStatistics(fm);
+			stats.update();
+						
+			try {
+				boolean modelIsSAT = false;
+				try {
+					modelIsSAT = isSAT(fm);	
+				}
+				catch(ContradictionException ce) {
+					modelIsSAT = false;
+				}
+
+				String modelName = getModelName(modelIsSAT, index);
+				
+				// must be UNSAT
+				if ( genSAT == -1 ) {
+					if (modelIsSAT) {
+						fireEvent("modelRejected", modelIndex, "Model is CONSISTENT");
+						fireEvent("modelIsSat", modelIndex, "");
+						continue;
+					}
+					fireEvent("modelIsUnsat", modelIndex, "");
+				}			
+				// must be SAT
+				else if ( genSAT == 1 ) {
+					if (!modelIsSAT) {
+						fireEvent("modelRejected", modelIndex, "Model is INCONSISTENT");
+						fireEvent("modelIsUnsat", modelIndex, "");
+						continue;
+					}
+					fireEvent("modelIsSat", modelIndex, "");
+				}
+				
+				fm.setName(modelName);
+				saveFeatureModel(fm, stats, modelPath + modelName + ".xml");
+//				System.out.println("done! [ECR=" + stats.getECRepresentativeness() + "]");
+				
+				fireEvent("modelAccepted", modelName, "");
+				fireEvent("doneGeneratingModel", modelName, "");
+				
+				index++;
+			}
+			catch (Exception e) {
+				fireEvent("errorDuringGeneration", modelIndex, e.getMessage());
+			}
+			
+			answer.add(fm);
+		}
+
+		if ( canceled ) {
+			fireEvent("generationCanceled", "", "");
+		}
+		else {
+			fireEvent("modelGenerationEnded", "", "");
+		}
+		return answer;
+		
+	}
+
 	
 	private String getModelName(boolean isSAT, int index) {
 		return collectionName + "-3CNF-FM-" + modelSize + "-" + (int)((ECR/100.0)*modelSize) + "-" + format3.format(clauseDensity) + "-" + (isSAT ? "SAT-" : "UNSAT-") + index;

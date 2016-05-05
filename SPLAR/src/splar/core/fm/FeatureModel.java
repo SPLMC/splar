@@ -1,5 +1,6 @@
 package splar.core.fm;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,6 +15,19 @@ import java.util.Vector;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import splar.core.constraints.Assignment;
 import splar.core.constraints.BooleanVariable;
@@ -1316,6 +1330,64 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
     
     // Save the feature model in permanent storage
 	protected abstract void saveNodes();
+
+	
+	
+	public String dumpFeatureIdeXML() {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance(); 
+		DocumentBuilder docBuilder = null;
+		Document doc = null;
+		StringWriter answer = null; 
+		
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+			answer = new StringWriter(); 
+			
+			doc = docBuilder.newDocument();
+			doc.setXmlStandalone(false);
+			
+			//Creation of the root node of the XML file 
+			Element rootNode = doc.createElement("featureModel");
+			Attr layoutAlgorithm = doc.createAttribute("chosenLayoutAlgorithm"); 
+			layoutAlgorithm.setValue("1");
+			rootNode.setAttributeNode(layoutAlgorithm);
+			doc.appendChild(rootNode);
+			
+			
+			//Creation of the <struct> node
+			Element structNode = doc.createElement("struct"); 
+			//setting the root's properties
+
+			Element rootFeature = root.createFeatureIdeElement(doc);
+			structNode.appendChild(rootFeature);
+//			Set<String> a = root.properties.keySet(); 
+//			Iterator<String> it = a.iterator(); 
+//			while (it.hasNext()) {
+//				System.out.println(it.next());
+//			}
+			
+		
+			rootNode.appendChild(structNode);
+			// Transform the content into an xml representation
+			TransformerFactory transFactory = TransformerFactory.newInstance();
+			Transformer transformer = transFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(answer);
+			transformer.transform(source, result);
+			return answer.toString();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 		
 }
 

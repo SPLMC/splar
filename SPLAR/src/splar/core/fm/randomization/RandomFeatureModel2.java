@@ -60,6 +60,13 @@ public class RandomFeatureModel2 extends FeatureModel {
 		cnfGenerator = new CNFGenerator();
 	}
 
+	/**
+	 * All features created are, by definition, abstract as they are not yet 
+	 * related to an active present at the active base. That's why I added 
+	 * the ABSTRACT property for the root, single and grouped features. 
+	 * 
+	 * Andre Luiz Peron Martins Lanna, May, 5th., 2016. 
+	 */
 	@Override
 	protected FeatureTreeNode createNodes() throws FeatureModelException {				
 		
@@ -69,6 +76,7 @@ public class RandomFeatureModel2 extends FeatureModel {
 		
 		RootNode root = new RootNode( featureName, featureName, TreeNodeRendererFactory.createRootRenderer());
 		root.attachData(new Integer(numberOfFeaturesToCreate-1));
+		root.setProperty("abstract", new String("true"));
 		fmNodes.add(root);				
 		FeatureTreeNode parentNode = null;
 		
@@ -99,6 +107,7 @@ public class RandomFeatureModel2 extends FeatureModel {
 					int availableNodes = numberOfFeaturesToCreate-countCreatedFeatures;
 					String childFeatureName = parentNode.getID().substring(1) + "_" + (i+1);
 					FeatureTreeNode randomNode = createRandomNode(childFeatureName, randonlyChooseNodeTypeToCreate(availableNodes), availableNodes);
+					randomNode.setProperty("abstract", new String("true"));
 					parentNode.add(randomNode);
 					
 					if ( randomNode instanceof FeatureGroup ) {
@@ -106,6 +115,7 @@ public class RandomFeatureModel2 extends FeatureModel {
 						int countGroupedNodes = groupRandomNode.getChildCount();
 						for( int j = 0 ; j < countGroupedNodes ; j++ ) {
 							FeatureTreeNode groupedNode = (FeatureTreeNode)groupRandomNode.getChildAt(j); 
+							groupedNode.setProperty("abstract", "true");
 							fmNodes.add(groupedNode);
 						}
 						countCreatedFeatures += (countGroupedNodes);
