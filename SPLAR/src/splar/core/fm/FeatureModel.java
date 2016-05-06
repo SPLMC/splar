@@ -1423,11 +1423,16 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 			//creation of <comments> node
 			Element commentsNode = doc.createElement("comments"); 
 			
+			//creation of <featureOrder> node
+			Element featureOrderNode = doc.createElement("featureOrder"); 
+			featureOrderNode.setAttribute("userDefined", "false");
 		
 			rootNode.appendChild(structNode);
 			rootNode.appendChild(constraintsNode);
 			rootNode.appendChild(calculationsNode);
 			rootNode.appendChild(commentsNode);
+			rootNode.appendChild(featureOrderNode); 
+			
 			
 			// Transform the content into an xml representation
 			TransformerFactory transFactory = TransformerFactory.newInstance();
