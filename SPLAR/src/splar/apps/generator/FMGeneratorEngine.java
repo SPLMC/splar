@@ -18,6 +18,11 @@ import splar.plugins.reasoners.sat.sat4j.FMReasoningWithSAT;
 
 public class FMGeneratorEngine{
 
+	//Constants for choosing which file format will be used for model persistence.
+	public static final int FEATUREIDE_FORMAT = 0;
+	public static final int SXFM_FORMAT = 1; 
+	public static final int BOTH_FORMAT = 2; 
+
 	private List<FMGeneratorEngineListener> listeners;
 	
 	CNFGenerator cnfGenerator;
@@ -257,7 +262,7 @@ public class FMGeneratorEngine{
 		
 	}
 	
-	public List<FeatureModel> run2() {
+	public List<FeatureModel> run2(int filePersistenceFormat) {
 		
 		fireEvent("modelGenerationStarted", "", "");
 
@@ -319,8 +324,26 @@ public class FMGeneratorEngine{
 				}
 				
 				fm.setName(modelName);
-				saveFeatureModel(fm, stats, modelPath + modelName + ".xml");
-//				System.out.println("done! [ECR=" + stats.getECRepresentativeness() + "]");
+				
+				//File persistence... 
+				switch (filePersistenceFormat) {
+				case FEATUREIDE_FORMAT:
+					saveFeatureIdeFM(fm, modelPath + "FeatureIDE_" + modelName + ".xml");
+					break;
+				
+				case SXFM_FORMAT:
+					saveFeatureModel(fm, stats, modelPath + modelName + ".xml");
+					break;
+				
+				case BOTH_FORMAT:
+					saveFeatureIdeFM(fm, modelPath + "FeatureIDE_" + modelName + ".xml");
+					saveFeatureModel(fm, stats, modelPath + modelName + ".xml");
+					break;
+
+				default:
+					break;
+				}
+				 
 				
 				fireEvent("modelAccepted", modelName, "");
 				fireEvent("doneGeneratingModel", modelName, "");
@@ -357,6 +380,37 @@ public class FMGeneratorEngine{
 //		System.out.println("Time: " + ((System.nanoTime()-start)/1E6));
 		return r.isConsistent();
 	}	
+	
+	
+	private void saveFeatureIdeFM(FeatureModel fm, String location) {
+		
+		File file = new File(location);
+				
+		PrintStream stream = null;
+		PrintStream standartOut = System.out;
+		try {
+			stream = new PrintStream(location);
+			System.setOut(stream);
+			System.out.println(fm.dumpFeatureIdeXML());
+//			fm.dumpXML();
+//			System.out.println("<!--");
+//			stats.dump();
+//			System.out.println("*************************************************************");
+//			System.out.println("CROSS-TREE CONSTRAINTS (Random 3-CNF Formula)");
+//			System.out.println("  CTC Representativeness (CTCR): " + format2.format(stats.getECRepresentativeness()*100) + "%");
+//			System.out.println("  Number of 3-CNF clauses......: " + stats.countConstraints());
+//			System.out.println("  CTC clause density specified.: " + format3.format(clauseDensity));
+//			System.out.println("*************************************************************");
+//			System.out.println("-->");
+			System.setOut(standartOut);
+			stream.flush();
+			stream.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	private void saveFeatureModel(FeatureModel fm, FeatureModelStatistics stats, String location) {
 		
