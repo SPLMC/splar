@@ -1420,11 +1420,14 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 			calculationsNode.setAttribute("Redundant", "true"); 
 			calculationsNode.setAttribute("Tautology", "true");
 			
+			//creation of <comments> node
+			Element commentsNode = doc.createElement("comments"); 
+			
 		
 			rootNode.appendChild(structNode);
 			rootNode.appendChild(constraintsNode);
 			rootNode.appendChild(calculationsNode);
-			
+			rootNode.appendChild(commentsNode);
 			
 			// Transform the content into an xml representation
 			TransformerFactory transFactory = TransformerFactory.newInstance();
