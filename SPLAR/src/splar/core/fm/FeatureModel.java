@@ -1385,7 +1385,6 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 					while (itLiterals.hasNext()) {
 						CNFLiteral l = itLiterals.next(); 
 						Element elVar = doc.createElement("var");  //creating the <var> element
-//						elVar.setNodeValue(l.toString().replaceAll("~", "")); //withou the negation symbol in front of
 						elVar.setTextContent(l.toString().replaceAll("~", ""));
 						if (!l.isPositive()) {
 							Element elNeg = doc.createElement("not");   //if the literal is negative, create the <neg> element
@@ -1413,10 +1412,20 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 			}
 			
 			
+			//creation of <calculations> node and its attributes
+			Element calculationsNode = doc.createElement("calculations");
+			calculationsNode.setAttribute("Auto", "true");
+			calculationsNode.setAttribute("Constraints", "true");
+			calculationsNode.setAttribute("Features", "true");
+			calculationsNode.setAttribute("Redundant", "true"); 
+			calculationsNode.setAttribute("Tautology", "true");
 			
 		
 			rootNode.appendChild(structNode);
 			rootNode.appendChild(constraintsNode);
+			rootNode.appendChild(calculationsNode);
+			
+			
 			// Transform the content into an xml representation
 			TransformerFactory transFactory = TransformerFactory.newInstance();
 			Transformer transformer = transFactory.newTransformer();
