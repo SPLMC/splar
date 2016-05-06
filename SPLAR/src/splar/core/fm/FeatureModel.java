@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1357,17 +1358,65 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 			//Creation of the <struct> node
 			Element structNode = doc.createElement("struct"); 
 			//setting the root's properties
-
 			Element rootFeature = root.createFeatureIdeElement(doc);
 			structNode.appendChild(rootFeature);
-//			Set<String> a = root.properties.keySet(); 
-//			Iterator<String> it = a.iterator(); 
-//			while (it.hasNext()) {
-//				System.out.println(it.next());
-//			}
+
+			
+			//Creation of the <constraints> node
+			Element constraintsNode = doc.createElement("constraints");
+			Collection<PropositionalFormula> constraints = getConstraints();
+			Iterator<PropositionalFormula> itConstraints = constraints.iterator();
+			Element ruleElement = null;
+			while (itConstraints.hasNext()) {
+				//For each propositional formula we extract a clausule in CNF form.
+				PropositionalFormula pf = itConstraints.next(); 
+				//Each formula is described by a CNF formula, composed of one or more clausules
+				Collection<CNFClause> clauses = pf.toCNFClauses();
+				Iterator<CNFClause> itClauses = clauses.iterator(); 
+				
+				//Each clausule is considered as a rule by FeatureIDE
+				while (itClauses.hasNext()) {
+					LinkedList<Element> clausesElements = new LinkedList<Element>(); 
+					ruleElement = doc.createElement("rule");
+					CNFClause c = itClauses.next(); 
+					
+					//Each literal in clause C is a variable for FeatureIDE
+					Iterator<CNFLiteral> itLiterals = c.getLiterals().iterator(); 
+					while (itLiterals.hasNext()) {
+						CNFLiteral l = itLiterals.next(); 
+						Element elVar = doc.createElement("var");  //creating the <var> element
+//						elVar.setNodeValue(l.toString().replaceAll("~", "")); //withou the negation symbol in front of
+						elVar.setTextContent(l.toString().replaceAll("~", ""));
+						if (!l.isPositive()) {
+							Element elNeg = doc.createElement("not");   //if the literal is negative, create the <neg> element
+							elNeg.appendChild(elVar);  //and append at it the <var> element previously created
+							clausesElements.add(elNeg);
+						} else {
+							clausesElements.add(elVar);
+						}
+					}
+					
+					//After created all the <var> or <neg> elements for the literals, we created
+					//a tree structure representing the disjunctions of all literals. Its root is
+					//the start node of the tree. 
+					while (clausesElements.size() > 1) {
+						Element e1 = clausesElements.removeLast(); 
+						Element e2 = clausesElements.removeLast();
+						Element disj = doc.createElement("disj"); 
+						disj.appendChild(e1);
+						disj.appendChild(e2); 
+						clausesElements.add(disj); 
+					}
+					ruleElement.appendChild(clausesElements.removeLast());
+				}
+				constraintsNode.appendChild(ruleElement);
+			}
+			
+			
 			
 		
 			rootNode.appendChild(structNode);
+			rootNode.appendChild(constraintsNode);
 			// Transform the content into an xml representation
 			TransformerFactory transFactory = TransformerFactory.newInstance();
 			Transformer transformer = transFactory.newTransformer();
