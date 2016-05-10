@@ -30,6 +30,8 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.sun.org.apache.bcel.internal.generic.SWITCH;
+
 import splar.core.constraints.Assignment;
 import splar.core.constraints.BooleanVariable;
 import splar.core.constraints.BooleanVariableInterface;
@@ -43,6 +45,15 @@ import splar.core.fm.clustering.FTCluster;
 
 public abstract class FeatureModel extends DefaultTreeModel implements FeatureModelListener {
 
+	/**
+	 * These constants below are used for representing the kinds of features nodes. 
+	 * They can be used, for example, at the new method for counting nodes.  
+	 */
+	public static final int SOLITAIRE_NODES_ONLY = 1; 
+	public static final int GROUPED_NODES_ONLY = 2;
+	public static final int SOLITAIRE_AND_GROUPED = 3;
+	
+	
 	private String name = "";
 	private Map<String,String> metadata;
     private FeatureTreeNode root = null;	        
@@ -53,7 +64,6 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
     private List<FeatureModelListener> listeners;
     
     private HashMap<String,FeatureModelState> states;
-//	protected HashMap<FeatureTreeNode,Long> instantiatedNodes = null;
 	
 	public FeatureModel() {
 		super(null, true);
@@ -443,6 +453,37 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 			}
 		}
 		return counter;
+	}
+	
+	public int countFeatures(int nodeType) {
+		int counter = 0;
+		switch (nodeType) {
+		case SOLITAIRE_NODES_ONLY:
+			for (FeatureTreeNode node : getNodes() ) {
+				if (node instanceof SolitaireFeature) {
+					counter++; 
+				}
+			}
+			break;
+
+		case GROUPED_NODES_ONLY:
+			for (FeatureTreeNode node : getNodes() ) {
+				if (node instanceof GroupedFeature) {
+					counter++; 
+				}
+			}
+			break;
+			
+		case SOLITAIRE_AND_GROUPED:
+			for (FeatureTreeNode node : getNodes() ) {
+				counter++;
+			}
+			
+		default:
+			break;
+		}
+		
+		return counter; 
 	}
 	
 	public double getAverageDepth() {

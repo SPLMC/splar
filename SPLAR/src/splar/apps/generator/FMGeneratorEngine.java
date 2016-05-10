@@ -279,11 +279,13 @@ public class FMGeneratorEngine{
 		
 		fireEvent("modelGenerationStarted", "", "");
 
+//		System.out.println("I will call prepare()"); //<<--------------
 		prepare();
 		
 		List<FeatureModel> answer = new LinkedList<FeatureModel>(); 
 		FeatureModel fm = null;
 		FeatureModelStatistics stats = null;
+//		System.out.println("I will start models generation!"); //<<--------------  
 		for( int index = startIndex ; index <= endIndex && !canceled; ) {
 
 //			System.out.println("------------------------------------------------");
@@ -293,7 +295,9 @@ public class FMGeneratorEngine{
 			
 			try {
 				fireEvent("generatingModel", modelIndex, "");
-				fm = generateFeatureModel(index, modelSize, ECR/100.0, clauseDensity);				
+//				System.out.println("I will generate _A_ model right now!"); //<<--------------
+				fm = generateFeatureModel(index, modelSize, ECR/100.0, clauseDensity);
+//				System.out.println("Model generated successfully"); //<<--------------
 				fireEvent("doneGeneratingModel", modelIndex, "");
 			}
 			catch( Exception e ) {
@@ -465,8 +469,13 @@ public class FMGeneratorEngine{
 					maxBranchingFactor, 
 					maxGroupSize, 0
 			);
-		fm.loadModel();			
-		fm.createCrossTreeConstraintsAsRandom3CNFFormula((int)(ECR * fmSize), clauseDensity);			
+//		System.out.println("Random CNF Feature Model generated successfully"); //<<--------------
+//		System.out.println("I will load the model right now"); //<<--------------
+		fm.loadModel();
+//		System.out.println("Model loaded successfully"); //<<--------------
+//		System.out.println("I will create the cross tree constraints right now"); //<<--------------
+		fm.createCrossTreeConstraintsAsRandom3CNFFormula((int)(ECR * fmSize), clauseDensity);
+//		System.out.println("Cross-tree constraints created successfully"); //<<--------------
 		return fm;
 	}
 	
