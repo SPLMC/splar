@@ -115,5 +115,34 @@ public class CNFClause {
 			}
 		}
 		return toString.toString();
-	}	
+	}
+	
+	/**
+	 * Transform a CNF clause into a CNF clause expressed by Java format
+	 * @return a string representing the CNF clause in Java format
+	 * @author andlanna
+	 */
+	public String toJavaCNF() {
+		StringBuilder builder = new StringBuilder(); 
+		int numLiterals = this.countLiterals(); 
+		
+		if (numLiterals > 1)
+			builder.append(" ( "); 
+		
+		Iterator<CNFLiteral> itCnfLiteral = getLiterals().iterator(); 
+		while (itCnfLiteral.hasNext()) {
+			CNFLiteral literal = itCnfLiteral.next(); 
+			if (!literal.isPositive())
+				builder.append("!"); 
+			builder.append(literal.getVariable().getID()); 
+			
+			if (itCnfLiteral.hasNext()) 
+				builder.append(" || ");
+		}
+		
+		if (numLiterals > 1)
+			builder.append(" ) ");
+		
+		return builder.toString(); 
+	}
 }

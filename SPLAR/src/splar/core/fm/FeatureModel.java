@@ -1495,6 +1495,29 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 		
 		return null;
 	}
+	
+	
+	/**
+	 * This method returns an string representing the whole feature model by a CNF 
+	 * formula represented by Java format. 
+	 * @return The CNF formula represented in Java format.
+	 * @author andlanna
+	 */
+	public String FM2JavaCNF() {
+		StringBuilder builder = new StringBuilder();
+		CNFFormula cnf = FM2CNF();
+		
+		Iterator<CNFClause> itCnfClause = cnf.getClauses().iterator();
+		while (itCnfClause.hasNext()) {
+			CNFClause c = itCnfClause.next();
+			builder.append(c.toJavaCNF());
+			
+			if (itCnfClause.hasNext())
+				builder.append(" && ");
+		}
+		
+		return builder.toString(); 
+	}
 		
 }
 
