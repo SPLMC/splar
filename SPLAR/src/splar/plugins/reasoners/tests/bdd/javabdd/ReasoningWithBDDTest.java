@@ -10,6 +10,11 @@ import splar.plugins.reasoners.tests.FMReasoningInterfaceTest;
 
 public class ReasoningWithBDDTest extends FMReasoningInterfaceTest {
 	
+	public ReasoningWithBDDTest(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
+
 	protected FMReasoningInterface createReasoner(FeatureModel model) {
 		int bddNodeNum = 10000, bddCacheSize = 10000;
 		new FTPreOrderTraversalHeuristic("BDDVarOrderHeuristic", model);

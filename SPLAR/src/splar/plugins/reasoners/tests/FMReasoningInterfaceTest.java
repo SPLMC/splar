@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.*;
 import static splar.plugins.tests.TestsGlobalContext.*;
 
 import javax.naming.OperationNotSupportedException;
@@ -18,6 +19,11 @@ import splar.core.fm.XMLFeatureModel;
 import splar.core.fm.reasoning.FMReasoningInterface;
 
 public abstract class FMReasoningInterfaceTest extends TestCase {
+
+	public FMReasoningInterfaceTest(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
 
 	FMReasoningInterface reasoner1, reasoner2;
 	FeatureModel featureModelConsistent, featureModelInconsistent;

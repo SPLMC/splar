@@ -7,6 +7,11 @@ import splar.plugins.configuration.tests.ConfigurationEngineTest;
 
 public class SATConfigurationEngineTest extends ConfigurationEngineTest {
 
+	public SATConfigurationEngineTest(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
+
 	protected ConfigurationEngine createConfigurationEngine(String featureModelPath) throws Exception {
 		return new SATConfigurationEngine(featureModelPath);	
 	}

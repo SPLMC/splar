@@ -1,6 +1,7 @@
 package splar.plugins.configuration.tests;
 
 
+import static org.junit.Assert.*;
 import static splar.plugins.tests.TestsGlobalContext.configurationFeatureModelXMLFile;
 import static splar.plugins.tests.TestsGlobalContext.initial_feature_model_configuration_state;
 
@@ -17,6 +18,11 @@ import splar.core.fm.configuration.ConfigurationEngine;
 import splar.core.fm.configuration.ConfigurationStep;
 
 public abstract class ConfigurationEngineTest extends TestCase {
+
+	public ConfigurationEngineTest(String name) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
 
 	protected ConfigurationEngine confEngine = null;
 	
