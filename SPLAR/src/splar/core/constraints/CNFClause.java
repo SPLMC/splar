@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import sun.management.counter.Variability;
+//import sun.management.counter.Variability;
 
 public class CNFClause {
 	

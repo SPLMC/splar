@@ -30,7 +30,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.sun.org.apache.bcel.internal.generic.SWITCH;
+//import com.sun.org.apache.bcel.internal.generic.SWITCH;
 
 import splar.core.constraints.Assignment;
 import splar.core.constraints.BooleanVariable;

@@ -7,15 +7,14 @@ import splar.plugins.configuration.tests.sat.sat4j.SATConfigurationEngineTest;
 import splar.plugins.reasoners.tests.bdd.javabdd.ReasoningWithBDDTest;
 import splar.plugins.reasoners.tests.sat.sat4j.ReasoningWithSATTest;
 
-public class AllTests {
-
+public class AllTests extends TestSuite{
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for tests");
 		//$JUnit-BEGIN$
-		suite.addTestSuite(ReasoningWithSATTest.class);
-		suite.addTestSuite(ReasoningWithBDDTest.class);
-		suite.addTestSuite(SATConfigurationEngineTest.class);
-		suite.addTestSuite(BDDConfigurationEngineTest.class);
+		suite.addTest(ReasoningWithSATTest.class);
+		suite.addTest(ReasoningWithBDDTest.class);
+		suite.addTest(SATConfigurationEngineTest.class);
+		suite.addTest(BDDConfigurationEngineTest.class);
 		//$JUnit-END$
 		return suite;
 	}
