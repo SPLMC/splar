@@ -9,9 +9,11 @@ import java.util.List;
 import org.sat4j.specs.ContradictionException;
 
 
+
 import splar.core.constraints.CNFGenerator;
 import splar.core.fm.FeatureModel;
 import splar.core.fm.FeatureModelStatistics;
+import splar.core.fm.personalization.PersonalFeatureModel;
 import splar.core.fm.randomization.Random3CNFFeatureModel;
 import splar.plugins.reasoners.sat.sat4j.FMReasoningWithSAT;
 
@@ -476,6 +478,11 @@ public class FMGeneratorEngine{
 //		System.out.println("I will create the cross tree constraints right now"); //<<--------------
 		fm.createCrossTreeConstraintsAsRandom3CNFFormula((int)(ECR * fmSize), clauseDensity);
 //		System.out.println("Cross-tree constraints created successfully"); //<<--------------
+		return fm;
+	}
+
+	public PersonalFeatureModel getPersonalFeatureModelInstance() {
+		PersonalFeatureModel fm = new PersonalFeatureModel();
 		return fm;
 	}
 	

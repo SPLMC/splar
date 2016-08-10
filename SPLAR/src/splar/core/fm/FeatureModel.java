@@ -56,7 +56,7 @@ public abstract class FeatureModel extends DefaultTreeModel implements FeatureMo
 	
 	private String name = "";
 	private Map<String,String> metadata;
-    private FeatureTreeNode root = null;	        
+    protected FeatureTreeNode root = null;	        
     protected Map<String,FeatureTreeNode> nodesMap = new LinkedHashMap<String,FeatureTreeNode>();
     private Map<String,PropositionalFormula> constraints = null;
     protected List<FeatureTreeNode> lastPropagatedNodes = null;
