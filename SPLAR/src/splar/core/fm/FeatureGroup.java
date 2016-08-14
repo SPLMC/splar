@@ -48,16 +48,24 @@ public class FeatureGroup extends FeatureTreeNode {
 		//Choosing each type of DOM element for representing the feature
 		String groupType = (getMin()==1 && getMax()==1 ? "alt" : "or");
 		String isAbstract = (String) getProperty("abstract");
+		Object objIsMandatory = getProperty("mandatory");
+		boolean isMandatory = false;
+		if (objIsMandatory != null)
+			isMandatory = (boolean) getProperty("mandatory");
+		
 
 		//
 		String name = getName().replaceFirst("_", "");
 		//setting the element's attributes
 		Element e = doc.createElement(groupType);
 		e.setAttribute("mandatory", "true");
-//		e.setAttribute("name", getName());
 		e.setAttribute("name", name);
 		if (isAbstract != null && isAbstract.equals("true"))
 			e.setAttribute("abstract", "true");
+		if (isMandatory)
+			e.setAttribute("mandatory", "true");
+		else
+			e.setAttribute("mandatory", "false");
 		
 		int numChildren = this.getChildCount(); 
 		for (int i=0; i<numChildren; i++) {

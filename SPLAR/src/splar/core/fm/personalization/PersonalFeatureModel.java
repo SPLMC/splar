@@ -95,10 +95,20 @@ public class PersonalFeatureModel extends FeatureModel implements
 		String nodeName; 
 		String nodeType;
 		String isMandatory;
+		Node nodeIsMandatory;
 		
 		nodeType = node.getNodeName();
 		nodeName = node.getAttributes().getNamedItem("name").getNodeValue(); 
-		isMandatory = node.getAttributes().getNamedItem("mandatory").getNodeValue();
+		
+		nodeIsMandatory = node.getAttributes().getNamedItem("mandatory");
+		if (nodeIsMandatory == null) {
+			isMandatory = "false";
+		} else {
+			if (nodeIsMandatory.getNodeValue().equalsIgnoreCase("true"))
+				isMandatory = "true";
+			else
+				isMandatory = "false";
+		}
 		
 		FeatureTreeNode feat = null; 
 		switch (nodeType) {
@@ -113,6 +123,8 @@ public class PersonalFeatureModel extends FeatureModel implements
 			feat = createInclusiveOrFeature(nodeName, nodeName, parent);
 			if (isMandatory.equalsIgnoreCase("true"))
 				feat.setProperty("mandatory", true);
+			else 
+				feat.setProperty("mandatory", false);
 			break;
 
 		case "alt": 
@@ -124,12 +136,15 @@ public class PersonalFeatureModel extends FeatureModel implements
 		case "feature":
 			if (parent instanceof FeatureGroup) 
 				feat = createGroupedFeature(nodeName, nodeName, parent);
-			else
-				feat = createOptionalFeature(nodeName, nodeName, parent);
-			
-			if (isMandatory.equalsIgnoreCase("true"))
-				feat.setProperty("mandatory", "true");
+			else{
+				if (isMandatory.equalsIgnoreCase("true"))
+					feat = createMandatoryFeature(nodeName, nodeName, parent);
+				else
+					feat = createOptionalFeature(nodeName, nodeName, parent);
+				
+			}
 			break;
+		
 		default:
 			break;
 		}
@@ -157,7 +172,6 @@ public class PersonalFeatureModel extends FeatureModel implements
 
 	private Node getRootElement(NodeList fmStructure) {
 		Node answer = null;
-//		System.out.println("|fmStructure = " + fmStructure);
 		Node strucElement = fmStructure.item(0); 
 		for (int i=0; i < strucElement.getChildNodes().getLength(); i++) {
 			Node n = strucElement.getChildNodes().item(i); 
